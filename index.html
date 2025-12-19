@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Lern-App für die BBV Jugendleiter Basketball Prüfung mit allen 185 Fragen">
+    <meta name="theme-color" content="#f97316">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="BBV Prüfung">
+    <link rel="manifest" href="./manifest.json">
+    <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
+    <link rel="apple-touch-icon" href="./icon-192.png">
+    <title>BBV JLS Prüfungsvorbereitung</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(to bottom right, #fff7ed, #ffedd5);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 42rem;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .text-center { text-align: center; }
+        .font-bold { font-weight: 700; }
+        .text-3xl { font-size: 1.875rem; line-height: 2.25rem; }
+        .text-2xl { font-size: 1.5rem; line-height: 2rem; }
+        .text-xl { font-size: 1.25rem; line-height: 1.75rem; }
+        .text-lg { font-size: 1.125rem; line-height: 1.75rem; }
+        .text-sm { font-size: 0.875rem; line-height: 1.25rem; }
+        .text-xs { font-size: 0.75rem; line-height: 1rem; }
+        .text-6xl { font-size: 3.75rem; line-height: 1; }
+        
+        .mb-2 { margin-bottom: 0.5rem; }
+        .mb-3 { margin-bottom: 0.75rem; }
+        .mb-4 { margin-bottom: 1rem; }
+        .mb-6 { margin-bottom: 1.5rem; }
+        .mb-8 { margin-bottom: 2rem; }
+        .mt-1 { margin-top: 0.25rem; }
+        .mt-2 { margin-top: 0.5rem; }
+        .mt-3 { margin-top: 0.75rem; }
+        .mt-4 { margin-top: 1rem; }
+        .mt-8 { margin-top: 2rem; }
+        .ml-2 { margin-left: 0.5rem; }
+        .mx-2 { margin-left: 0.5rem; margin-right: 0.5rem; }
+        
+        .p-2 { padding: 0.5rem; }
+        .p-3 { padding: 0.75rem; }
+        .p-4 { padding: 1rem; }
+        .px-3 { padding-left: 0.75rem; padding-right: 0.75rem; }
+        .px-4 { padding-left: 1rem; padding-right: 1rem; }
+        .px-6 { padding-left: 1.5rem; padding-right: 1.5rem; }
+        .py-1 { padding-top: 0.25rem; padding-bottom: 0.25rem; }
+        .py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+        .py-3 { padding-top: 0.75rem; padding-bottom: 0.75rem; }
+        .py-4 { padding-top: 1rem; padding-bottom: 1rem; }
+        .pt-3 { padding-top: 0.75rem; }
+        
+        .space-y-1 > * + * { margin-top: 0.25rem; }
+        .space-y-3 > * + * { margin-top: 0.75rem; }
+        .space-y-4 > * + * { margin-top: 1rem; }
+        
+        .rounded { border-radius: 0.25rem; }
+        .rounded-lg { border-radius: 0.5rem; }
+        .rounded-full { border-radius: 9999px; }
+        
+        .bg-white { background-color: #ffffff; }
+        .bg-gray-50 { background-color: #f9fafb; }
+        .bg-gray-200 { background-color: #e5e7eb; }
+        .bg-gray-300 { background-color: #d1d5db; }
+        .bg-gray-400 { background-color: #9ca3af; }
+        .bg-orange-50 { background-color: #fff7ed; }
+        .bg-orange-100 { background-color: #ffedd5; }
+        .bg-orange-500 { background-color: #f97316; }
+        .bg-orange-600 { background-color: #ea580c; }
+        .bg-red-50 { background-color: #fef2f2; }
+        .bg-red-100 { background-color: #fee2e2; }
+        .bg-red-500 { background-color: #ef4444; }
+        .bg-red-600 { background-color: #dc2626; }
+        .bg-green-50 { background-color: #f0fdf4; }
+        .bg-green-500 { background-color: #22c55e; }
+        .bg-green-600 { background-color: #16a34a; }
+        .bg-blue-50 { background-color: #eff6ff; }
+        .bg-blue-500 { background-color: #3b82f6; }
+        .bg-blue-600 { background-color: #2563eb; }
+        .bg-purple-500 { background-color: #a855f7; }
+        .bg-purple-600 { background-color: #9333ea; }
+        
+        .text-gray-600 { color: #4b5563; }
+        .text-gray-700 { color: #374151; }
+        .text-gray-800 { color: #1f2937; }
+        .text-orange-600 { color: #ea580c; }
+        .text-orange-800 { color: #9a3412; }
+        .text-red-600 { color: #dc2626; }
+        .text-red-800 { color: #991b1b; }
+        .text-green-600 { color: #16a34a; }
+        .text-blue-600 { color: #2563eb; }
+        .text-blue-800 { color: #1e40af; }
+        .text-white { color: #ffffff; }
+        
+        .border { border-width: 1px; }
+        .border-2 { border-width: 2px; }
+        .border-t { border-top-width: 1px; }
+        .border-gray-300 { border-color: #d1d5db; }
+        .border-red-300 { border-color: #fca5a5; }
+        .border-green-500 { border-color: #22c55e; }
+        .border-red-500 { border-color: #ef4444; }
+        
+        .w-full { width: 100%; }
+        
+        button {
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            font-family: inherit;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .btn-scale:hover {
+            transform: scale(1.02);
+        }
+        
+        .btn {
+            display: block;
+            width: 100%;
+            font-weight: 700;
+            padding: 1rem 1.5rem;
+            border-radius: 0.5rem;
+            transition: all 0.2s;
+        }
+        
+        .btn-orange { background-color: #f97316; color: white; }
+        .btn-orange:hover { background-color: #ea580c; }
+        
+        .btn-red { background-color: #ef4444; color: white; }
+        .btn-red:hover { background-color: #dc2626; }
+        
+        .btn-blue { background-color: #3b82f6; color: white; }
+        .btn-blue:hover { background-color: #2563eb; }
+        
+        .btn-green { background-color: #22c55e; color: white; }
+        .btn-green:hover { background-color: #16a34a; }
+        
+        .btn-purple { background-color: #a855f7; color: white; }
+        .btn-purple:hover { background-color: #9333ea; }
+        
+        .btn-gray { background-color: #9ca3af; color: white; }
+        .btn-gray:hover { background-color: #6b7280; }
+        
+        .btn-gray-light { background-color: #d1d5db; color: #1f2937; }
+        .btn-gray-light:hover { background-color: #9ca3af; }
+        
+        select {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            font-family: inherit;
+            background-color: white;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            background-color: #e5e7eb;
+            border-radius: 9999px;
+            height: 0.5rem;
+        }
+        
+        .progress-fill {
+            background-color: #f97316;
+            height: 0.5rem;
+            border-radius: 9999px;
+            transition: width 0.3s;
+        }
+        
+        .badge {
+            display: inline-block;
+            background-color: #ffedd5;
+            color: #9a3412;
+            font-size: 0.75rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            margin-bottom: 0.75rem;
+        }
+        
+        .badge-white {
+            background-color: white;
+            color: #dc2626;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 700;
+        }
+        
+        .flex {
+            display: flex;
+        }
+        
+        .flex-center {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .flex-between {
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .relative {
+            position: relative;
+        }
+        
+        .italic {
+            font-style: italic;
+        }
+        
+        .leading-relaxed {
+            line-height: 1.625;
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.3s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { 
+                opacity: 0; 
+                transform: translateY(10px); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0); 
+            }
+        }
+        
+        .shadow-lg {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        
+        .shadow-xl {
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        @media (max-width: 640px) {
+            .card {
+                padding: 1rem;
+            }
+            .text-3xl {
+                font-size: 1.5rem;
+            }
+            .text-2xl {
+                font-size: 1.25rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useMemo } = React;
+
+        // Alle 185 Fragen mit Antworten
+        const alleFragenData = [
+            // Fragen 1-30: Anforderungen und Trainingslehre
+            { nr: 1, frage: "Die Gesundheit ist ein Faktor der sportlichen Leistungsfähigkeit.", antwort: true, thema: "Anforderungen Basketball", erklaerung: "Gesundheit ist neben Technik, Taktik, Kondition, Koordination und psychischen Faktoren einer der grundlegenden Faktoren der sportlichen Leistungsfähigkeit." },
+            { nr: 2, frage: "Kraft und Technik gehören zu den konditionellen Fähigkeiten.", antwort: false, thema: "Anforderungen Basketball", erklaerung: "Kraft gehört zu den konditionellen Fähigkeiten, aber Technik nicht. Die konditionellen Fähigkeiten umfassen Kraft, Ausdauer, Schnelligkeit und Beweglichkeit." },
+            { nr: 3, frage: "Zu den koordinativen Fähigkeiten gehören Technik und Taktik.", antwort: false, thema: "Anforderungen Basketball", erklaerung: "Koordinative Fähigkeiten sind informationelle Fähigkeiten, die Steuerungsfunktionen des Zentralnervensystems betreffen. Technik und Taktik sind motorische Fertigkeiten bzw. spieltaktische Elemente." },
+            { nr: 4, frage: "Äußere Bedingungen der sportlichen Leistung sind u.a. Familie und Beruf.", antwort: true, thema: "Anforderungen Basketball", erklaerung: "Familie, Beruf, soziales Umfeld und andere äußere Rahmenbedingungen beeinflussen die sportliche Leistungsfähigkeit erheblich." },
+            { nr: 5, frage: "Die Muskelmasse kann durch Muskelaufbautraining vergrößert werden.", antwort: true, thema: "Anforderungen Basketball", erklaerung: "Durch gezieltes Muskelaufbautraining (Hypertrophietraining) mit entsprechender Belastung kann die Muskelmasse vergrößert werden." },
+            { nr: 6, frage: "Reaktivkrafttraining ist eine Methode des Krafttrainings.", antwort: true, thema: "Anforderungen Basketball", erklaerung: "Reaktivkrafttraining (z.B. durch Sprungübungen, Plyometrie) ist eine spezifische Trainingsmethode zur Verbesserung der Reaktivkraft." },
+            { nr: 7, frage: "Die Dehnfähigkeit der Muskulatur wird durch die verschiedenen Formen des Stretchings und durch Koordinationsübungen trainiert.", antwort: true, thema: "Anforderungen Basketball", erklaerung: "Beweglichkeit wird sowohl durch Stretching als auch durch koordinative Übungen verbessert. Die Kombination ist am effektivsten." },
+            { nr: 8, frage: "Schnelligkeitstraining sollte man noch vor dem Aufwärmen machen, weil man da ausgeruht ist.", antwort: false, thema: "Anforderungen Basketball", erklaerung: "Schnelligkeitstraining sollte nach dem Aufwärmen durchgeführt werden, um Verletzungen zu vermeiden. Es sollte im ausgeruhten Zustand stattfinden, aber NACH dem Aufwärmen." },
+            { nr: 9, frage: "Das Beschleunigungsvermögen kann durch Maximalkrafttraining für die Beine verbessert werden.", antwort: true, thema: "Anforderungen Basketball", erklaerung: "Maximalkraft ist eine Grundlage für Schnellkraft und Beschleunigung. Durch Maximalkrafttraining der Beinmuskulatur kann die Kraftbasis verbessert werden." },
+            { nr: 10, frage: "Basketballer benötigen wenig Ausdauer, da Basketball eine Schnellkraftsportart ist.", antwort: false, thema: "Anforderungen Basketball", erklaerung: "Basketball hat hohe Anforderungen an die Ausdauer. Spieler müssen über 40 Minuten wiederholt intensive Belastungen ausführen können." },
+            
+            { nr: 11, frage: "Es gibt nur eine Methode des Ausdauertrainings.", antwort: false, thema: "Trainingslehre", erklaerung: "Es gibt mehrere Methoden: Dauermethode, Intervallmethode, Wiederholungsmethode und Wettkampfmethode." },
+            { nr: 12, frage: "Beweglichkeitstraining hat für Basketballer höchste Priorität.", antwort: false, thema: "Trainingslehre", erklaerung: "Für Basketballer sind Spielfähigkeit, Technik, Schnelligkeit, Kraft und Ausdauer wichtiger. Beweglichkeit dient vor allem der Verletzungsprophylaxe." },
+            { nr: 13, frage: "Beweglichkeit im Basketball sollte auch über koordinative Trainingsformen geschult werden.", antwort: true, thema: "Trainingslehre", erklaerung: "Beweglichkeit kann durch koordinative Übungen mit großen Bewegungsamplituden verbessert werden, was im Basketball besonders sinnvoll ist." },
+            { nr: 14, frage: "Passen und Fangen gehören in den Bereich der Technik.", antwort: true, thema: "Anforderungen Basketball", erklaerung: "Passen und Fangen sind grundlegende basketballspezifische Techniken, die zu den motorischen Fertigkeiten gehören." },
+            { nr: 15, frage: "Zu den Grundfertigkeiten beim Basketballspiel gehören das Laufen und das Springen.", antwort: true, thema: "Anforderungen Basketball", erklaerung: "Laufen und Springen sind grundlegende motorische Fertigkeiten, die im Basketball essentiell sind." },
+            { nr: 16, frage: "Mannschaftstaktisches Handeln basiert auf individuellen Techniken und gruppentaktischen Maßnahmen.", antwort: true, thema: "Anforderungen Basketball", erklaerung: "Mannschaftstaktik baut auf individueller Technik und Gruppentaktik auf. Ohne solide Basis kann keine effektive Mannschaftstaktik umgesetzt werden." },
+            { nr: 17, frage: "Ein Angriffssystem gegen einen 1-3-1 Zone, bei dem alle Spieler bestimmten Laufwegen zu folgen haben, zählt zur Gruppentaktik.", antwort: false, thema: "Anforderungen Basketball", erklaerung: "Ein komplettes Angriffssystem mit allen 5 Spielern gehört zur Mannschaftstaktik, nicht zur Gruppentaktik." },
+            { nr: 18, frage: "Fintieren zählt zur Gruppentaktik.", antwort: false, thema: "Anforderungen Basketball", erklaerung: "Fintieren ist eine individualtaktische Maßnahme, bei der ein einzelner Spieler versucht, seinen Gegenspieler zu täuschen." },
+            { nr: 19, frage: "Starten und Stoppen sind wesentliche Spielhandlungen im Basketball.", antwort: true, thema: "Anforderungen Basketball", erklaerung: "Die Fähigkeit, schnell zu beschleunigen und kontrolliert zu stoppen, ist essentiell für erfolgreiches Spiel." },
+            { nr: 20, frage: "Die Spielidee des Basketball lautet 'Spaß haben und Schwitzen'.", antwort: false, thema: "Anforderungen Basketball", erklaerung: "Die Spielidee lautet: 'Körbe erzielen und Körbe verhindern'. Dies ist das zentrale Element." },
+            
+            { nr: 21, frage: "Koordinative Fähigkeiten werden in erster Linie von der Energiebereitstellung beeinflusst.", antwort: false, thema: "Trainingslehre", erklaerung: "Koordinative Fähigkeiten werden primär von den Steuerungsfunktionen des Zentralnervensystems beeinflusst, nicht von der Energiebereitstellung." },
+            { nr: 22, frage: "Unter Adaptation versteht man die funktionelle und morphologische Veränderung der Organsysteme aufgrund wirksamer Belastungsreize.", antwort: true, thema: "Trainingslehre", erklaerung: "Adaptation beschreibt genau diese Veränderungsprozesse. Funktionelle Anpassungen betreffen die Leistungsfähigkeit, morphologische die Struktur." },
+            { nr: 23, frage: "Man unterscheidet bei der biologischen Anpassung die metabolische und die psychische Anpassung.", antwort: false, thema: "Trainingslehre", erklaerung: "Bei der biologischen Anpassung unterscheidet man metabolische, morphologische und zentralnervöse/kognitive Anpassungen. Psychische Anpassung ist ein separater Bereich." },
+            { nr: 24, frage: "Das Modell der Superkompensation besagt, dass der Organismus nach einer Übermüdung Energiereserven auf dem vorherigen Niveau wiederherstellt.", antwort: false, thema: "Trainingslehre", erklaerung: "Die Superkompensation besagt, dass der Organismus ein HÖHERES Leistungsniveau als vorher anstrebt, nicht nur das vorherige wiederherstellt." },
+            { nr: 25, frage: "Die Trainingsbelastung hängt u.a. von der Gesamtzahl der im Training anwesenden Spieler ab.", antwort: false, thema: "Trainingslehre", erklaerung: "Die Trainingsbelastung wird durch Belastungskomponenten definiert: Reizdauer, Reizdichte, Reizhäufigkeit, Reizumfang und Trainingshäufigkeit. Die Spielerzahl ist ein organisatorischer Faktor." },
+            { nr: 26, frage: "Das Prinzip der ansteigenden Belastung besagt, dass Umfang und Intensität im Laufe des Trainingsprozesses zunehmen müssen.", antwort: true, thema: "Trainingslehre", erklaerung: "Um kontinuierliche Leistungssteigerung zu erreichen, müssen Trainingsbelastungen progressiv gesteigert werden." },
+            { nr: 27, frage: "Trainingsreize sollten immer gleich sein, da sich dann der Organismus kontinuierlich anpasst.", antwort: false, thema: "Trainingslehre", erklaerung: "Trainingsreize müssen variiert werden, da gleichförmige Reize abstumpfen und zu Stagnation führen." },
+            { nr: 28, frage: "Ein Training ist nur dann effektiv, wenn Belastung und Erholung sinnvoll kombiniert werden.", antwort: true, thema: "Trainingslehre", erklaerung: "Ohne angemessene Erholung kann keine Superkompensation stattfinden." },
+            { nr: 29, frage: "Im einem Training soll 'Ausdauer vor Kraft vor Schnelligkeit' trainiert werden.", antwort: false, thema: "Trainingslehre", erklaerung: "Die richtige Reihenfolge lautet 'Schnelligkeit vor Kraft vor Ausdauer'." },
+            { nr: 30, frage: "Kinder sollten frühestmöglich mit Krafttraining an Geräten anfangen ('Früh übt sich').", antwort: false, thema: "Trainingslehre", erklaerung: "Kinder sollten nicht zu früh mit schwerem Gerätetraining beginnen. Im Kindesalter steht spielerisches Training im Vordergrund." },
+            
+            // Fragen 31-45: Anatomie und Sportverletzungen
+            { nr: 31, frage: "Üblicherweise werden in der Sportpraxis die schnellen Muskelfasern als ST-Fasern, die langsamen als FT-Fasern bezeichnet.", antwort: false, thema: "Anatomie", erklaerung: "Es ist genau umgekehrt: FT-Fasern (Fast Twitch) sind schnell, ST-Fasern (Slow Twitch) sind langsam." },
+            { nr: 32, frage: "Besonders die schnellen Muskelfasern der Sprinter sind besonders gut trainierbar.", antwort: false, thema: "Anatomie", erklaerung: "FT-Fasern sind weniger gut trainierbar als ST-Fasern. Die genetische Verteilung ist weitgehend festgelegt." },
+            { nr: 33, frage: "Sehnen sind Verbindungsgewebe zwischen Muskeln und Knochen und haben die Aufgabe, die Kraft der Muskulatur auf das Skelett zu übertragen.", antwort: true, thema: "Anatomie", erklaerung: "Sehnen bestehen aus straffem Bindegewebe und verbinden Muskeln mit Knochen." },
+            { nr: 34, frage: "Bänder sind bindegewebige Verbindungen von Muskel zu Muskel.", antwort: false, thema: "Anatomie", erklaerung: "Bänder sind bindegewebige Verbindungen von Knochen zu Knochen. Sie stabilisieren Gelenke." },
+            { nr: 35, frage: "Man kann Gelenke nach den Gelenkachsen unterscheiden.", antwort: true, thema: "Anatomie", erklaerung: "Gelenke werden u.a. nach ihren Bewegungsachsen klassifiziert: einachsig, zweiachsig, dreiachsig." },
+            
+            { nr: 36, frage: "Nach einer Sportverletzung sollte man in die Sauna gehen.", antwort: false, thema: "Erste Hilfe", erklaerung: "Nach einer Verletzung NICHT in die Sauna! Wärme verstärkt die Schwellung. Die PECH-Regel gilt: Pause, Eis, Compression, Hochlagern." },
+            { nr: 37, frage: "Vor dem Training sollte der Trainer u.a. darauf achten, dass die Kinder Schmuck ablegen und die Schuhe richtig gebunden sind.", antwort: true, thema: "Erste Hilfe", erklaerung: "Dies gehört zur Aufsichtspflicht und Verletzungsprophylaxe. Schmuck kann zu Verletzungen führen." },
+            { nr: 38, frage: "Nach dem Umknicken eines Spielers muss der Trainer zunächst durch Bewegen des Fußes und Abtasten herausfinden, ob eine schwerere Verletzung vorliegt.", antwort: false, thema: "Erste Hilfe", erklaerung: "Der Trainer sollte NICHT selbst durch Bewegen diagnostizieren. Richtig ist: PECH-Regel anwenden und bei Verdacht medizinische Hilfe holen." },
+            { nr: 39, frage: "Körperstabilisierende Übungen (KSÜ) sind wichtig zur Verletzungsvorbeugung.", antwort: true, thema: "Erste Hilfe", erklaerung: "KSÜ stärken die Rumpfmuskulatur und reduzieren das Verletzungsrisiko, besonders an Sprunggelenken und Knien." },
+            { nr: 40, frage: "6 Wochen Sportverbot vom Arzt bedeutet, dass die Kinder keinen Fuß in die Halle setzen dürfen.", antwort: false, thema: "Erste Hilfe", erklaerung: "Sportverbot bedeutet nicht zwingend totale Abwesenheit. Kinder können oft beim Training zusehen oder leichte Aufgaben übernehmen." },
+            { nr: 41, frage: "Man sollte Eiswürfel mit Wasser mischen, weil Eis alleine zu kalt ist.", antwort: true, thema: "Erste Hilfe", erklaerung: "Direkter Hautkontakt mit Eis kann zu Kälteschäden führen. Besser: Eiswürfel mit etwas Wasser oder ein feuchtes Tuch dazwischen." },
+            { nr: 42, frage: "Das 'H' in der Formel 'PECH' steht für 'Heimgehen'.", antwort: false, thema: "Erste Hilfe", erklaerung: "PECH steht für: P = Pause, E = Eis, C = Compression, H = Hochlagern." },
+            { nr: 43, frage: "Durch Dehnen kann eine Muskelzerrung gelindert werden.", antwort: false, thema: "Erste Hilfe", erklaerung: "Bei akuter Muskelzerrung sollte man NICHT dehnen, da dies die Verletzung verschlimmern kann. Richtig: PECH-Regel." },
+            { nr: 44, frage: "Eine Sprunggelenkschwellung nimmt durch leichtes Traben ab.", antwort: false, thema: "Erste Hilfe", erklaerung: "Bei Schwellung sollte das Gelenk ruhiggestellt, gekühlt und hochgelagert werden. Belastung würde die Schwellung verschlimmern." },
+            { nr: 45, frage: "'Compression' in der 'PECH'-Formel heißt 'Zähne zusammenbeißen'.", antwort: false, thema: "Erste Hilfe", erklaerung: "Compression bedeutet das Anlegen eines Druckverbandes, um die Schwellung zu begrenzen." },
+            
+            // Fragen 46-60: Entwicklung
+            { nr: 46, frage: "Das Späte Schulkindalter ist das 'Risikoalter' für Alkohol und Zigaretten.", antwort: false, thema: "Entwicklung", erklaerung: "Die Adoleszenz (Jugendalter, ca. ab 14 Jahren) ist das kritische Alter, nicht das Späte Schulkindalter." },
+            { nr: 47, frage: "Mit 'Pubertät' bezeichnet man das Frühe Schulkindalter, also die Entwicklungsstufe 6 bis 9-Jähriger.", antwort: false, thema: "Entwicklung", erklaerung: "Pubertät bezeichnet die Phase zwischen ca. 10-15 Jahren. Das Frühe Schulkindalter liegt vor der Pubertät." },
+            { nr: 48, frage: "Mit 'Retardierung' bezeichnet man das Verschieben der körperlichen Reifung nach vorne (Frühentwickler).", antwort: false, thema: "Entwicklung", erklaerung: "Retardierung bedeutet verzögerte Entwicklung (Spätentwickler). Frühentwickler = Akzeleration." },
+            { nr: 49, frage: "Im Grundschulalter (6-9 Jahre) können sich die Kinder besonders gut konzentrieren, so dass man lange an einem Trainingsschwerpunkt arbeiten kann.", antwort: false, thema: "Entwicklung", erklaerung: "Im Frühen Schulkindalter ist die Konzentrationsfähigkeit begrenzt. Training sollte abwechslungsreich sein." },
+            { nr: 50, frage: "Die Phase der Pubertät ist für das Erlernen neuer Bewegungen besonders gut geeignet.", antwort: false, thema: "Entwicklung", erklaerung: "Die Pubertät ist NICHT optimal fürs Bewegungslernen. Das 'Goldene Lernalter' liegt im Späten Schulkindalter (ca. 10-12 Jahre)." },
+            { nr: 51, frage: "Kinder/Jugendliche lernen bestimmte Sachen in bestimmten Lebensabschnitten besonders gut.", antwort: true, thema: "Entwicklung", erklaerung: "Es gibt sensible Phasen für bestimmte Fähigkeiten: Koordination im Späten Schulkindalter, Ausdauer in der 1. puberalen Phase, Kraft in der 2. puberalen Phase." },
+            { nr: 52, frage: "Das Kinder- und Jugendtraining ist kein reduziertes Erwachsenentraining.", antwort: true, thema: "Entwicklung", erklaerung: "Kinder sind keine kleinen Erwachsenen! Training muss entwicklungsgemäß gestaltet werden." },
+            { nr: 53, frage: "Die Koordination lässt sich am besten im Späten Schulkindalter verbessern.", antwort: true, thema: "Entwicklung", erklaerung: "Das Späte Schulkindalter (ca. 10-12 Jahre) ist die sensible Phase für Koordination - das 'Goldene Lernalter'." },
+            { nr: 54, frage: "Mädchen sind Jungen in der Entwicklung in jeder Altersstufe voraus.", antwort: false, thema: "Entwicklung", erklaerung: "Mädchen sind etwa 1-2 Jahre voraus, aber nicht in JEDER Altersstufe. Im Erwachsenenalter ist der Vorsprung ausgeglichen." },
+            { nr: 55, frage: "In der Adoleszenz ist die Trainingsmotivation meist von den Eltern abhängig.", antwort: false, thema: "Entwicklung", erklaerung: "In der Adoleszenz wird die Peer-Group wichtiger als die Eltern für die Motivation." },
+            
+            { nr: 56, frage: "Leistungsdifferenzierung ist im Mannschaftssport wenig sinnvoll.", antwort: false, thema: "Heterogene Gruppen", erklaerung: "Leistungsdifferenzierung ist sehr wichtig, um alle Spieler optimal zu fördern." },
+            { nr: 57, frage: "Stationsbetrieb kann eine inhaltliche Differenzierung bei heterogenen Trainingsgruppen erleichtern.", antwort: true, thema: "Heterogene Gruppen", erklaerung: "Beim Stationstraining können verschiedene Schwierigkeitsgrade angeboten werden." },
+            { nr: 58, frage: "Konditionstraining ist mit heterogenen Gruppen kaum möglich.", antwort: false, thema: "Heterogene Gruppen", erklaerung: "Konditionstraining ist gut möglich durch zeitbasierte Belastung oder individuelle Vorgaben." },
+            { nr: 59, frage: "Ältere Jungs spielen besonders gerne im 5-5 gegen kleine Mädchen, weil Wurfblocks motivierend sind.", antwort: false, thema: "Heterogene Gruppen", erklaerung: "Diese Aussage ist ironisch gemeint. Zu große Leistungsunterschiede sind demotivierend." },
+            { nr: 60, frage: "Für leistungsstarke Mädchen ist das Spielen mit Jungs empfehlenswert.", antwort: true, thema: "Heterogene Gruppen", erklaerung: "Wenn Mädchen leistungsmäßig mithalten können, ist das Mitspielen eine gute Förderung." },
+            
+            // Fragen 61-90: Methodik und Planung
+            { nr: 61, frage: "Im Jugendtraining sollte das Hauptaugenmerk auf den Fehlern liegen, damit diese sich nicht einschleifen.", antwort: false, thema: "Methodik", erklaerung: "Der Fokus sollte auf dem Richtigen liegen! 'Catch them at being good' - positive Verstärkung ist wichtiger." },
+            { nr: 62, frage: "Ein autoritärer Erziehungsstil führt zu schnellen Lernerfolgen und ist daher auch langfristig der beste Weg im Kinder- und Jugendtraining.", antwort: false, thema: "Methodik", erklaerung: "Autoritär ist kurzfristig effektiv, aber langfristig kontraproduktiv. Ein demokratisch-kooperativer Stil ist nachhaltiger." },
+            { nr: 63, frage: "Für junge Basketballer ist es ausreichend, BB-Techniken zu beherrschen. Darüber hinausgehendes Bewegungslernen stiehlt nur wertvolle Trainingszeit.", antwort: false, thema: "Methodik", erklaerung: "Vielseitiges Bewegungslernen ist gerade im Kindesalter wichtig! Eine breite motorische Basis ist essentiell." },
+            { nr: 64, frage: "Mit der Automatisation sollte man erst beginnen, wenn der Spieler die Bewegung schon annähernd fehlerfrei kann.", antwort: true, thema: "Methodik", erklaerung: "Automatisation sollte erst erfolgen, wenn die Bewegung stabil ist. Sonst schleift sich eine fehlerhafte Bewegung ein." },
+            { nr: 65, frage: "Minis lernen hauptsächlich durch Imitation.", antwort: true, thema: "Methodik", erklaerung: "Jüngere Kinder lernen stark über visuelle Wahrnehmung und Nachahmung. Vormachen ist wichtiger als Erklärungen." },
+            { nr: 66, frage: "Beim Lernen neuer Bewegungen ist es wichtig, diese oft richtig zu wiederholen.", antwort: true, thema: "Methodik", erklaerung: "Häufige richtige Wiederholung ist essentiell. Durch Wiederholung werden Bewegungsmuster gefestigt und automatisiert." },
+            { nr: 67, frage: "Kinder lernen vorwiegend aufgrund der Erklärungen des Trainers.", antwort: false, thema: "Methodik", erklaerung: "Kinder lernen hauptsächlich durch eigenes Tun, Ausprobieren und Nachahmung. Erklärungen sind weniger wichtig." },
+            { nr: 68, frage: "Bei fehlerhafter Ausführung muss der Trainer unbedingt gleichzeitig alle Fehler korrigieren.", antwort: false, thema: "Methodik", erklaerung: "Man sollte nur einen, höchstens zwei Fehler gleichzeitig korrigieren. Zu viele Korrekturen überfordern." },
+            { nr: 69, frage: "Bei Kindern sollte man in jedem Training mehrere Trainingsziele ansteuern, um die individuelle Erfolgswahrscheinlichkeit zu vergrößern und das Training interessant zu machen.", antwort: true, thema: "Methodik", erklaerung: "Im Kindertraining ist die konzentrische Methode (mehrere parallele Ziele) wichtig für Abwechslung und Erfolgserlebnisse." },
+            { nr: 70, frage: "Auch wenn Spieler eine Übung noch nicht können, muss man trotzdem zur nächsthöheren gehen, wenn das so im Trainingsplan steht.", antwort: false, thema: "Methodik", erklaerung: "Der Trainingsplan ist ein Leitfaden, keine starre Vorgabe. Der Trainer muss flexibel auf den Lernstand reagieren." },
+            
+            { nr: 71, frage: "Man gehe vom Komplexen zum Einfachen, dann freuen sich die Jugendlichen, weil es leichter wird.", antwort: false, thema: "Methodik", erklaerung: "Der Grundsatz lautet: Vom Leichten zum Schweren, vom Einfachen zum Komplexen, vom Bekannten zum Unbekannten." },
+            { nr: 72, frage: "Bei 10-Jährigen korrigiert der Trainer erst mehrere Minuten nach der Ausführung der zu erlernenden Bewegung, damit das Kind erst selbst nachdenken kann.", antwort: false, thema: "Methodik", erklaerung: "Korrektur sollte zeitnah erfolgen, besonders bei Kindern. Nach Minuten ist die Verknüpfung verloren." },
+            { nr: 73, frage: "Koordination kann man dadurch trainieren, dass man einfache Bewegungen unter erschwerten Rahmenbedingungen übt.", antwort: true, thema: "Methodik", erklaerung: "Koordinationstraining erfolgt durch Variation und Erschwerung: Zeitdruck, Präzisionsdruck, Variabilität." },
+            { nr: 74, frage: "Grobkoordination bedeutet, dass der Spieler die zu erlernende Bewegung nur unter erleichterten Bedingungen durchführen kann.", antwort: false, thema: "Methodik", erklaerung: "Grobkoordination bedeutet, dass die Bewegung in Grundzügen vorhanden ist, aber noch fehleranfällig und instabil." },
+            { nr: 75, frage: "Stabiles Bewegungskönnen erkennt man daran, dass die Bewegungsaufgabe auch bei Ermüdung noch richtig gelöst wird.", antwort: true, thema: "Methodik", erklaerung: "Feinstkoordination ist gekennzeichnet durch stabile Ausführung auch unter schwierigen Bedingungen wie Ermüdung." },
+            { nr: 76, frage: "Das Verschaffen einer Bewegungsvorstellung ist der erste Schritt bei der Vermittlung neuer Bewegungen.", antwort: true, thema: "Methodik", erklaerung: "Vor der ersten Ausführung muss eine Bewegungsvorstellung geschaffen werden durch Vormachen oder Erklären." },
+            { nr: 77, frage: "Verbale Anweisungen spielen beim Bewegungslernen keine Rolle (Learning by doing).", antwort: false, thema: "Methodik", erklaerung: "Verbale Anweisungen sind eine wichtige methodische Maßnahme, besonders bei älteren Spielern." },
+            { nr: 78, frage: "Übungsreihen beginnen möglichst beim Bewegungsziel.", antwort: true, thema: "Methodik", erklaerung: "Aus Motivationsgründen beginnt eine MÜR beim Bewegungsziel. So sehen Spieler sofort den Sinn." },
+            { nr: 79, frage: "Mit methodischen Übungsreihen kann man besonders die Spielfähigkeit schulen.", antwort: false, thema: "Methodik", erklaerung: "MÜR dienen der Technikschulung. Für die Spielfähigkeit sind methodische Spielreihen (MSR) ideal." },
+            { nr: 80, frage: "Methodische Spielreihen steigern die Zahl der beteiligten Spieler.", antwort: true, thema: "Methodik", erklaerung: "MSR arbeiten nach dem Prinzip: von kleineren zu größeren Mannschaftsstärken (1-1, 2-2, 3-3, bis 5-5)." },
+            
+            { nr: 81, frage: "Mit dem 'Technikspiel' schult man besonders konditionelle Faktoren.", antwort: false, thema: "Methodik", erklaerung: "Technikspiel dient der spielerischen Schulung von Ballgefühl, Koordination und Bewegungskreativität." },
+            { nr: 82, frage: "Methodische Spielreihen arbeiten nach dem Prinzip der Elementarisierung, d.h. der Reduktion komplexer Spielsituationen auf Grundsituationen.", antwort: true, thema: "Methodik", erklaerung: "Elementarisierung reduziert komplexe Situationen auf Grundsituationen, bei denen die Spielidee gewahrt bleibt." },
+            { nr: 83, frage: "Im fortgeschrittenen Leistungstraining ist die Konzentrikmethode besonders erfolgreich.", antwort: false, thema: "Methodik", erklaerung: "Im Leistungstraining dominiert die Schwerpunktmethode. Die konzentrische Methode ist typisch für Anfängertraining." },
+            { nr: 84, frage: "Zu den 'Inventarregeln' gehört die Anzahl der Spieler.", antwort: false, thema: "Methodik", erklaerung: "Inventarregeln betreffen Spielfeld, Ball, Körbe. Die Anzahl der Spieler fällt unter Personalregeln." },
+            { nr: 85, frage: "Durch 'Spiel ohne Dribbling' kann aggressive Verteidigung trainiert werden.", antwort: true, thema: "Methodik", erklaerung: "Ohne Dribbling wird Verteidigung erleichtert und aggressiveres Verteidigen möglich." },
+            { nr: 86, frage: "Bei der Sachanalyse berücksichtigt man die Zahl der zur Verfügung stehenden Bälle.", antwort: false, thema: "Trainingsplanung", erklaerung: "Die Zahl der Bälle gehört zur Organisationsplanung. Die Sachanalyse untersucht den Trainingsinhalt selbst." },
+            { nr: 87, frage: "Trainingsziele werden als kurze Zurufe an die Spieler formuliert.", antwort: false, thema: "Trainingsplanung", erklaerung: "Trainingsziele werden für die Planung klar und präzise formuliert. Zurufe sind Handlungsanweisungen während des Trainings." },
+            { nr: 88, frage: "Der erste Trainingsblock ist üblicherweise das Aufwärmen.", antwort: true, thema: "Trainingsplanung", erklaerung: "Eine Trainingseinheit beginnt mit dem Aufwärmen, gefolgt von Hauptteil und Schlussteil." },
+            { nr: 89, frage: "Ein optimales Training wird auf die Minute exakt geplant.", antwort: false, thema: "Trainingsplanung", erklaerung: "Training sollte zeitlich strukturiert sein, aber nicht starr. Flexibilität ist wichtig." },
+            { nr: 90, frage: "Die Leistungssteuerung erfolgt idealerweise durch Zählen, Messen und Vergleichen.", antwort: true, thema: "Trainingsplanung", erklaerung: "Objektive Leistungssteuerung durch messbare Größen ermöglicht Kontrolle des Fortschritts." },
+            
+            // Fragen 91-100: Organisation und Rechtsfragen
+            { nr: 91, frage: "Spielerpässe werden vom Bayerischen Basketball Verband ausgestellt.", antwort: true, thema: "Organisation", erklaerung: "Der Landesverband (BBV) ist zuständig für die Ausstellung von Spielerpässen." },
+            { nr: 92, frage: "Bei einem offiziellen Spiel muss das Spielfeld mindestens 15 Min. vor dem angesetzten Spieltermin zum Einspielen zur Verfügung stehen.", antwort: true, thema: "Organisation", erklaerung: "Laut Spielordnung muss die Halle 15 Minuten vor Spielbeginn verfügbar sein." },
+            { nr: 93, frage: "Schiedsrichter werden grundsätzlich zwischen Heimverein und Gastverein geteilt.", antwort: false, thema: "Organisation", erklaerung: "Die Regelung variiert nach Spielklasse. Eine grundsätzliche 50:50-Teilung gibt es nicht." },
+            { nr: 94, frage: "Das Kampfgericht besteht aus zwei Personen (Anschreiber/in, Zeitnehmer/in).", antwort: true, thema: "Organisation", erklaerung: "Das Kampfgericht besteht mindestens aus Anschreiber und Zeitnehmer." },
+            { nr: 95, frage: "Alle Ausrüstungsgegenstände für das Kampfgericht können über den DBB-Shop auf der Internetseite des DBB bezogen werden.", antwort: true, thema: "Organisation", erklaerung: "Der DBB-Shop bietet alle offiziellen Materialien für das Kampfgericht an." },
+            { nr: 96, frage: "Jugendliche unter 18 Jahren bedürfen der Aufsicht.", antwort: true, thema: "Rechtsfragen", erklaerung: "Minderjährige bedürfen grundsätzlich der Aufsicht. Der Grad hängt von verschiedenen Faktoren ab." },
+            { nr: 97, frage: "Der Grad der Aufsichtspflicht hängt von verschiedenen Faktoren ab (z.B. Alter, Gruppengröße, etc.).", antwort: true, thema: "Rechtsfragen", erklaerung: "Die Aufsicht richtet sich nach: Alter, Reife, Gruppengröße, Art der Tätigkeit, Gefahrenpotenzial." },
+            { nr: 98, frage: "Zur Erfüllung der Aufsichtspflicht gehören das Belehren und Warnen.", antwort: true, thema: "Rechtsfragen", erklaerung: "Aufsichtspflicht umfasst: Belehren und Warnen, Ge- und Verbote, Überwachen und Eingreifen." },
+            { nr: 99, frage: "Der Trainer hat bei seiner Tätigkeit ein pädagogisches Ermessen.", antwort: true, thema: "Rechtsfragen", erklaerung: "Der Trainer hat pädagogisches Ermessen bei der Gestaltung des Trainings im Rahmen rechtlicher Grenzen." },
+            { nr: 100, frage: "Gelegentlich muss ein Trainer auch härter strafen, z.B. mit Ohrfeigen.", antwort: false, thema: "Rechtsfragen", erklaerung: "Körperliche Züchtigung ist absolut verboten und strafbar! Pädagogische Maßnahmen müssen gewaltfrei sein." },
+            
+            // Fragen 101-120: Dribbling und Passen
+            { nr: 101, frage: "Der Ball soll hauptsächlich mit der Handfläche, weniger mit den Fingern gedribbelt werden.", antwort: false, thema: "Dribbling", erklaerung: "Der Ball wird mit den Fingerspitzen gedribbelt, nicht mit der Handfläche!" },
+            { nr: 102, frage: "Ein Schnelligkeitsdribbling (Fast Break) ist ein tiefes, rhythmisches Dribbling.", antwort: false, thema: "Dribbling", erklaerung: "Schnelligkeitsdribbling ist ein hohes, nach vorne gerichtetes Dribbling. Tiefes Dribbling würde bremsen." },
+            { nr: 103, frage: "Beim Dribbling sollte man fest dribbeln.", antwort: false, thema: "Dribbling", erklaerung: "Man sollte nicht fest dribbeln, sondern den Ball mit Fingerspitzengefühl kontrollieren." },
+            { nr: 104, frage: "Passgang bedeutet, dass man beim Losdribbeln mit rechts auch mit dem rechten Bein beginnt.", antwort: true, thema: "Dribbling", erklaerung: "Passgang bedeutet, dass Hand und gleichseitiges Bein synchron arbeiten (rechte Hand - rechtes Bein)." },
+            { nr: 105, frage: "Beim Handwechsel vor dem Körper (cross over) soll der Ball mindestens auf Hüfthöhe oder höher gedribbelt werden.", antwort: false, thema: "Dribbling", erklaerung: "Beim Cross-over sollte der Ball tief, etwa auf Kniehöhe, gedribbelt werden." },
+            { nr: 106, frage: "Der Spinmove wird durch Kopfsteuerung eingeleitet.", antwort: false, thema: "Dribbling", erklaerung: "Der Spin-Move wird durch Rückendrehung und Hüftrotation eingeleitet, nicht primär durch den Kopf." },
+            { nr: 107, frage: "Facing bedeutet, sich nach dem Ballerhalt zu seinem Verteidiger zu drehen.", antwort: false, thema: "Dribbling", erklaerung: "Facing bedeutet, sich zum KORB zu drehen, nicht zum Verteidiger." },
+            { nr: 108, frage: "Erhält ein Spieler in der Bewegung den Ball und hat dabei einen Fuß auf dem Boden, darf er danach noch zwei Schritte machen, um zum Stopp zu kommen.", antwort: true, thema: "Schrittregel", erklaerung: "Beim Ballerhalt in Bewegung mit einem Fuß am Boden sind zwei weitere Schritte erlaubt (1-2-Regel)." },
+            { nr: 109, frage: "Spieler A fängt den Ball im Sprung. Sein Standbein wird bei der Landung dadurch definiert, welches Bein vorne (näher zum Korb) landet.", antwort: false, thema: "Schrittregel", erklaerung: "Beim Ballfang im Sprung mit gleichzeitiger Landung beider Füße kann der Spieler FREI wählen, welches sein Standbein ist." },
+            { nr: 110, frage: "Ein Spieler, der den Ball im Stand fängt, kann sein Standbein frei wählen.", antwort: true, thema: "Schrittregel", erklaerung: "Bei Ballerhalt im Stand mit beiden Füßen am Boden kann der Spieler frei wählen, welcher Fuß sein Standbein wird." },
+            
+            { nr: 111, frage: "Der einhändige Handballpass wird vorwiegend im Fast Break verwendet.", antwort: true, thema: "Passen", erklaerung: "Der einhändige Baseball-/Handballpass ist ideal für weite Distanzen im Schnellangriff." },
+            { nr: 112, frage: "Beim beidhändigen Überkopfpass wird Schwung hinter dem Kopf geholt.", antwort: false, thema: "Passen", erklaerung: "Der Überkopfpass wird VOR dem Kopf gehalten und nach vorne-oben abgegeben." },
+            { nr: 113, frage: "Beim Druckpass bleiben die Ellenbogen gebeugt, die Hände werden nach außen geklappt.", antwort: false, thema: "Passen", erklaerung: "Beim Druckpass werden die Arme GESTRECKT und nach außen geklappt." },
+            { nr: 114, frage: "Eine sinnvolle Handlungsanweisung zum Erlernen des Fangens ist: 'Ball Abholen - Ansaugen - Anziehen'.", antwort: true, thema: "Passen", erklaerung: "Diese Bewegungsfolge beschreibt aktives Fangen gut: Ball entgegengehen, greifen, zum Körper ziehen." },
+            { nr: 115, frage: "Bodenpässe werden so gespielt, dass der Ball ca. nach einem Drittel der Passstrecke am Boden aufprallt.", antwort: true, thema: "Passen", erklaerung: "Die Faustregel: Aufprallpunkt etwa bei 1/3 bis 1/2 der Strecke zum Mitspieler." },
+            { nr: 116, frage: "Zum Fangen werden dem Passgeber die Finger als Ziel gezeigt.", antwort: true, thema: "Passen", erklaerung: "Der Fänger zeigt die offenen Hände mit gespreizten Fingern als Ziel ('Hands ready')." },
+            { nr: 117, frage: "Eine sinnvolle Handlungsanweisung zum Passen ist: 'Ballhöhe wechseln!'", antwort: true, thema: "Passen", erklaerung: "Die Variation der Ballhöhe vor dem Pass erschwert dem Verteidiger das Antizipieren." },
+            { nr: 118, frage: "Der häufigste Pass im Basketballspiel ist der beidhändige Brustpass.", antwort: true, thema: "Passen", erklaerung: "Der Brustpass ist der Standardpass für mittlere Distanzen - schnell, präzise und sicher." },
+            { nr: 119, frage: "Einhändige Bodenpässe sind besonders beim Centeranspiel häufig.", antwort: true, thema: "Passen", erklaerung: "Beim Anspiel des Centers sind einhändige Bodenpässe oft die beste Option." },
+            { nr: 120, frage: "Bei richtiger Hand- und Armhaltung formen die Finger ein 'X' hinter dem Ball.", antwort: false, thema: "Passen", erklaerung: "Die Finger formen ein 'W' oder Dreieck hinter/um den Ball, kein 'X'." },
+            
+            // Fragen 121-145: Würfe, Beinarbeit, Verteidigung
+            { nr: 121, frage: "Beim Wurf sind die Finger der Wurfhand gespreizt.", antwort: true, thema: "Wurf", erklaerung: "Die Finger sollten gespreizt sein für eine größere Kontrollfläche." },
+            { nr: 122, frage: "Der Ball liegt beim Wurf auf Fingern und dem Handballen.", antwort: false, thema: "Wurf", erklaerung: "Der Ball liegt auf den FINGERN und Fingerballen, NICHT auf dem Handballen." },
+            { nr: 123, frage: "Der Blick ist beim Wurf auf den Ball gerichtet.", antwort: false, thema: "Wurf", erklaerung: "Der Blick ist auf das ZIEL gerichtet (Korb, Ring), NICHT auf den Ball." },
+            { nr: 124, frage: "Üblicherweise wird der Sprungwurf nur bei 3-Punkt-Versuchen, der Standwurf bei allen kürzeren Wurfdistanzen angewendet.", antwort: false, thema: "Wurf", erklaerung: "Der Sprungwurf ist der Standard-Wurf aus allen Distanzen im Spiel." },
+            { nr: 125, frage: "Nach dem Abklappen des Handgelenkes sollen der Daumen nach unten und Zeige-/Mittelfinger nach vorn zeigen.", antwort: true, thema: "Wurf", erklaerung: "Dies ist die korrekte Follow-Through-Position für optimale Ballrotation." },
+            { nr: 126, frage: "Beim Korbleger sind alle Schritte gleich lang.", antwort: false, thema: "Wurf", erklaerung: "Die Schritte sind unterschiedlich: kurz - lang - Absprung." },
+            { nr: 127, frage: "Man unterscheidet Druckwurf- und Unterhandkorbleger.", antwort: true, thema: "Wurf", erklaerung: "Es gibt Unterhandkorbleger (mit Rotation) und Druckwurf-Korbleger (mehr Kraft)." },
+            { nr: 128, frage: "Der Korbleger ist stabiler als der Powershot.", antwort: false, thema: "Wurf", erklaerung: "Der Powershot ist stabiler (beidhändiger Abschluss, bessere Ballkontrolle)." },
+            { nr: 129, frage: "Die Landung nach dem Korbleger erfolgt auf einem Bein.", antwort: false, thema: "Wurf", erklaerung: "Die Landung sollte auf BEIDEN Beinen erfolgen. Dies schont die Gelenke." },
+            { nr: 130, frage: "Bei einem direkten Unterhandkorbleger berührt der Ball das Brett nicht.", antwort: true, thema: "Wurf", erklaerung: "Ein direkter Korbleger geht ohne Brettberührung in den Korb." },
+            
+            { nr: 131, frage: "Für einen erfolgreichen Wurf ist Gleichgewicht entscheidend.", antwort: true, thema: "Wurf", erklaerung: "Balance ist fundamental für erfolgreiche Würfe. BEEF: Balance, Eyes, Elbow, Follow-through." },
+            { nr: 132, frage: "Es ist für Kinder wichtig, beim Wurftraining möglichst viele Dreipunktewürfe zu versuchen.", antwort: false, thema: "Wurf", erklaerung: "Kinder sollten NICHT zu früh Dreipunktewürfe üben! Altersgerechte Distanzen sind wichtig." },
+            { nr: 133, frage: "Der Powershot wird immer mit der korbnäheren Hand ausgeführt.", antwort: false, thema: "Wurf", erklaerung: "Der Powershot wird typischerweise BEIDHÄNDIG ausgeführt - das ist der Vorteil." },
+            { nr: 134, frage: "Beim Powershot ist der Ball besser geschützt als beim Korbleger.", antwort: true, thema: "Wurf", erklaerung: "Der beidhändige Powershot schützt den Ball besser gegen Blocks und Kontakt." },
+            { nr: 135, frage: "Korbleger mit unterschiedlich großen Bällen sind eine sinnvolle Trainingsform.", antwort: true, thema: "Wurf", erklaerung: "Das Training mit verschiedenen Bällen verbessert Koordination und Ballgefühl." },
+            { nr: 136, frage: "Bei allen Cuts sollte man immer mit gleichbleibender Geschwindigkeit laufen.", antwort: false, thema: "Beinarbeit", erklaerung: "Effektive Cuts nutzen Tempowechsel! Konstante Geschwindigkeit macht den Cut vorhersehbar." },
+            { nr: 137, frage: "Beim Backdoor-Cut sollte man immer mit Brustpass angespielt werden.", antwort: false, thema: "Beinarbeit", erklaerung: "Oft ist ein Bodenpass besser beim Backdoor. Die Passart hängt von der Situation ab." },
+            { nr: 138, frage: "Bei allen Cuts sollte man zwischendurch die Geschwindigkeit verringern, damit der Passgeber auch reagieren kann.", antwort: true, thema: "Beinarbeit", erklaerung: "Cuts sollten Rhythmuswechsel haben: antäuschen - verlangsamen - explosiv starten." },
+            { nr: 139, frage: "Handlungsanweisung beim In & out ist: 'Touch the feet'.", antwort: false, thema: "Beinarbeit", erklaerung: "Die Anweisung ist 'Touch the colour' oder 'Touch the key' - man berührt die Zone." },
+            { nr: 140, frage: "Beim Posting up befreit sich der Center durch 'swim strokes'.", antwort: true, thema: "Beinarbeit", erklaerung: "Swim strokes helfen dem Center, sich Raum zu schaffen ohne zu foulen." },
+            
+            { nr: 141, frage: "Beim ersten Verteidigungsschritt nach links überkreuzt idealerweise das rechte Bein das linke.", antwort: false, thema: "Verteidigung", erklaerung: "Nach links bewegt man das LINKE Bein zuerst (Sidestep), OHNE Überkreuzen." },
+            { nr: 142, frage: "Die Knie sind in der Verteidigungsgrundhaltung gestreckt.", antwort: false, thema: "Verteidigung", erklaerung: "Die Knie sind GEBEUGT! Tiefe Haltung ermöglicht schnelle Reaktion." },
+            { nr: 143, frage: "Das Gewicht soll in der Verteidigungsgrundhaltung auf den Fußballen sein.", antwort: true, thema: "Verteidigung", erklaerung: "Das Gewicht liegt auf den Fußballen (Vorderfuß) für explosive Starts." },
+            { nr: 144, frage: "Beim Kontakt mit dem Angreifer sollte der Kontakt auf der Körpervorderseite des Verteidigers stattfinden.", antwort: true, thema: "Verteidigung", erklaerung: "Für legale Verteidigungsposition muss der Kontakt auf der Vorderseite erfolgen." },
+            { nr: 145, frage: "Wenn der Verteidiger erst einmal eine legale Verteidigungsposition eingenommen hat, darf er sich auch nach vorne bewegen, auch wenn es dabei zum Kontakt mit dem Gegner kommt.", antwort: true, thema: "Verteidigung", erklaerung: "Hat der Verteidiger legale Position, darf er sich auch vorwärts bewegen. Der Angreifer ist dann für Kontakt verantwortlich." },
+            
+            // Fragen 146-165: Schnellangriff und Taktik
+            { nr: 146, frage: "Die Ballsicherung für einen Fast Break erfolgt oft durch einen erfolgreichen Defense-Rebound.", antwort: true, thema: "Schnellangriff", erklaerung: "Der Defense-Rebound ist der häufigste Auslöser für den Schnellangriff." },
+            { nr: 147, frage: "Fast Break-Training soll stets mit mittelmäßiger Geschwindigkeit ausgeführt werden. Im Spiel entwickeln die Spieler automatisch Wettkampftempo.", antwort: false, thema: "Schnellangriff", erklaerung: "Fast Break sollte IMMER in hohem Tempo trainiert werden! 'Wie man trainiert, so spielt man.'" },
+            { nr: 148, frage: "Es wird unterschieden zwischen improvisiertem Fast Break und organisiertem Fast Break.", antwort: true, thema: "Schnellangriff", erklaerung: "Improvisiert = spontan. Organisiert = festgelegte Laufwege. Beide Formen ergänzen sich." },
+            { nr: 149, frage: "Eine Handlungsanweisung im 2-1 ist: 'Ziehe mit dem Ball so lange zum Korb, bis der Verteidiger sich deutlich zu dir orientiert'.", antwort: true, thema: "Schnellangriff", erklaerung: "Im 2-1 zwingt der Ballführer den Verteidiger zur Entscheidung, dann wird gepasst." },
+            { nr: 150, frage: "Im Fast Break soll versucht werden, eine Überzahlsituation zu schaffen und diese zu einer 1-0 Situation abzubauen.", antwort: true, thema: "Schnellangriff", erklaerung: "Überzahl schaffen und zur besten Abschlussmöglichkeit (idealerweise freier Korbleger) nutzen." },
+            { nr: 151, frage: "Als 'Transition' wird die Abschlussphase des Fast Breaks bezeichnet.", antwort: false, thema: "Schnellangriff", erklaerung: "Transition bezeichnet den GESAMTEN Übergang von Verteidigung zu Angriff." },
+            { nr: 152, frage: "Auch im Schnellangriff sollen nur die besten Werfer auf den Korb werfen.", antwort: false, thema: "Schnellangriff", erklaerung: "Im Fast Break gilt: Wer frei ist, schließt ab! Keine Zeit für Ballzirkulation." },
+            { nr: 153, frage: "Der letzte Pass beim 2-1 sollte bei Kindern ein Bodenpass sein.", antwort: true, thema: "Schnellangriff", erklaerung: "Bei Kindern ist der Bodenpass im 2-1 sicherer." },
+            { nr: 154, frage: "Ein Mitteldistanzwurf ist bereits ein Erfolg der Unterzahlverteidigung.", antwort: true, thema: "Schnellangriff", erklaerung: "Wenn die Unterzahlverteidigung den Korbleger verhindert, ist das ein Erfolg." },
+            { nr: 155, frage: "Unterzahlverteidigung hat das Ziel den Mitspielern Gelegenheit zu verschaffen, mit den Schiedsrichtern zu diskutieren.", antwort: false, thema: "Schnellangriff", erklaerung: "Absurd! Unterzahl soll Zeit gewinnen, damit eigene Spieler zurücklaufen können." },
+            
+            { nr: 156, frage: "Aufbauspieler sollten unbedingt gute Rebounder sein.", antwort: false, thema: "Taktik", erklaerung: "Guards sind typischerweise NICHT die primären Rebounder - das sind größere Spieler." },
+            { nr: 157, frage: "'Kleine' Centerspieler ('4') sollten auch auf der Flügelposition spielen können.", antwort: true, thema: "Taktik", erklaerung: "Der Power Forward sollte flexibel sein und sowohl innen als auch auf dem Flügel spielen können." },
+            { nr: 158, frage: "Für ein Entry sind individuelle und kollektive Befreiungsbewegungen entscheidend.", antwort: true, thema: "Taktik", erklaerung: "Entry (Eintrag) erfordert gute Cuts, Screens und Befreiungsbewegungen." },
+            { nr: 159, frage: "Beim Spacing wird ein Teil der Angriffshälfte durch möglichst viele Angreifer besetzt.", antwort: false, thema: "Taktik", erklaerung: "Spacing bedeutet das Gegenteil: Die Angreifer verteilen sich mit ausreichend Abstand (4-5m)." },
+            { nr: 160, frage: "Eine Handlungsanweisung gegen Zonendeckung lautet: 'Überlagerung!'", antwort: true, thema: "Taktik", erklaerung: "Überlagerung (Overload) ist ein Prinzip gegen Zone: Mehr Angreifer auf einer Seite." },
+            { nr: 161, frage: "Einen Passweg vom Ballbesitzer entfernt spielt man 'helpside', zwei Passwege entfernt 'deny'.", antwort: false, thema: "Taktik", erklaerung: "Umgekehrt: Einen Passweg = Ballside/Deny. Zwei+ Passwege = Helpside." },
+            { nr: 162, frage: "Die Körpergröße spielt bei der Zuordnung von Matchups keine Rolle.", antwort: false, thema: "Taktik", erklaerung: "Körpergröße ist EIN wichtiges Kriterium, aber nicht das einzige." },
+            { nr: 163, frage: "Verteidiger auf der Ballside müssen bei einem Durchbruch aushelfen.", antwort: false, thema: "Taktik", erklaerung: "Verteidiger auf der HELPSIDE helfen aus, nicht die Ballside-Verteidiger!" },
+            { nr: 164, frage: "Verteidiger auf der Helpside müssen sich nicht mehr um ihren Gegner kümmern, sondern sich völlig auf das Aushelfen konzentrieren.", antwort: false, thema: "Taktik", erklaerung: "Auch Helpside-Verteidiger müssen ihren Gegner im Blick behalten (Ball-You-Man-Principle)." },
+            { nr: 165, frage: "Ein Vorteil der Manndeckung ist, dass einzelne Spieler weniger foulgefährdet sind.", antwort: false, thema: "Taktik", erklaerung: "In der Manndeckung sind einzelne Verteidiger oft STÄRKER foulgefährdet als in der Zone." },
+            
+            // Fragen 166-185: Aufwärmen, Stretching, Mini-Basketball
+            { nr: 166, frage: "Je älter ein Spieler ist, umso kürzer braucht er sich aufzuwärmen.", antwort: false, thema: "Aufwärmen", erklaerung: "Das Gegenteil! Je älter, desto wichtiger und länger sollte das Aufwärmen sein." },
+            { nr: 167, frage: "Im Sommer kann man sich das Aufwärmen sparen.", antwort: false, thema: "Aufwärmen", erklaerung: "Aufwärmen ist IMMER notwendig, unabhängig von der Außentemperatur!" },
+            { nr: 168, frage: "Aufwärmen ist auch wichtig, um sich mental auf Basketball einzustellen.", antwort: true, thema: "Aufwärmen", erklaerung: "Aufwärmen hat auch psychische Funktionen: mentale Vorbereitung, Konzentration, Teambuilding." },
+            { nr: 169, frage: "Scharfe Sprints verkürzen sinnvollerweise die Aufwärmphase.", antwort: false, thema: "Aufwärmen", erklaerung: "Intensive Belastungen gehören NICHT ins Aufwärmen! Sie sollten erst danach erfolgen." },
+            { nr: 170, frage: "Aufwärmen vermindert das Verletzungsrisiko.", antwort: true, thema: "Aufwärmen", erklaerung: "Richtiges Aufwärmen reduziert das Verletzungsrisiko signifikant." },
+            
+            { nr: 171, frage: "Viele Sportler empfinden das leichte Dehnen der belasteten Muskulatur nach Training oder Spiel als angenehm und erholungsfördernd.", antwort: true, thema: "Stretching", erklaerung: "Leichtes Dehnen nach Belastung wird oft als angenehm empfunden und gehört zum Cool Down." },
+            { nr: 172, frage: "Körperstabilisierende Übungen (KSÜ) werden mit dem eigenen Körpergewicht als Belastung durchgeführt.", antwort: true, thema: "Stretching", erklaerung: "KSÜ nutzen das eigene Körpergewicht (Planks, Seitstütz, Einbeinstand)." },
+            { nr: 173, frage: "Für alle Stretching-Übungen gilt, die Bewegung möglichst ruckartig zu beginnen.", antwort: false, thema: "Stretching", erklaerung: "Niemals ruckartig dehnen! Ruckartige Bewegungen können Verletzungen verursachen." },
+            { nr: 174, frage: "Besonders langes Dehnen vor dem Spiel wirkt sich günstig auf die Schnellkraftleistungen im Spiel aus.", antwort: false, thema: "Stretching", erklaerung: "Intensives statisches Dehnen VOR dem Spiel kann die Schnellkraft REDUZIEREN!" },
+            { nr: 175, frage: "Durch KSÜ kann die Sprungkraft gesteigert werden.", antwort: true, thema: "Stretching", erklaerung: "Eine starke Rumpfmuskulatur ist wichtig für Sprungkraft durch bessere Kraftübertragung." },
+            
+            { nr: 176, frage: "Im Minitraining sollte der Trainer von Anfang möglichst viele Fehler kritisieren, damit diese sich nicht einschleifen.", antwort: false, thema: "Mini-Basketball", erklaerung: "Ganz im Gegenteil! Bei Minis sollte der Fokus auf dem Positiven liegen - 'Catch them at being good'!" },
+            { nr: 177, frage: "Im Kinderbereich ist es wichtiger Meisterschaften zu gewinnen als Spieler zu entwickeln.", antwort: false, thema: "Mini-Basketball", erklaerung: "Absolut falsch! Entwicklung ALLER Spieler steht im Vordergrund, nicht kurzfristige Ergebnisse." },
+            { nr: 178, frage: "Das Minitraining sollte vielseitig sein und viele Spielformen enthalten.", antwort: true, thema: "Mini-Basketball", erklaerung: "Minitraining sollte abwechslungsreich sein mit vielen verschiedenen Übungen und Spielen." },
+            { nr: 179, frage: "Der Minitrainer beachtet, dass Kinder vor allem am Vorbild lernen.", antwort: true, thema: "Mini-Basketball", erklaerung: "Kinder lernen stark über Beobachtung und Nachahmung. Der Trainer ist wichtiges Vorbild." },
+            { nr: 180, frage: "Minis sollten frühzeitig Stretchingprogramme erlernen.", antwort: false, thema: "Mini-Basketball", erklaerung: "Minis brauchen kein systematisches Stretching! Kinder sind natürlicherweise beweglich." },
+            { nr: 181, frage: "Eine klare Aufgabenverteilung beim Aufräumen sorgt für Sicherheit in der Halle.", antwort: true, thema: "Mini-Basketball", erklaerung: "Wenn jedes Kind weiß, was es aufräumen soll, läuft es geordnet ab und Unfallgefahr sinkt." },
+            { nr: 182, frage: "Die Benutzung der Trillerpfeife sollte im Minitraining aus pädagogischen Gründen vermieden werden.", antwort: true, thema: "Mini-Basketball", erklaerung: "Die Pfeife sollte sparsam eingesetzt werden! Ständiges Pfeifen nervt und unterbricht den Spielfluss." },
+            { nr: 183, frage: "Minispieler, die etwas falsch machen, sollte man als 'schlechtes Vorbild' für die übrigen Spieler nutzen.", antwort: false, thema: "Mini-Basketball", erklaerung: "Niemals Kinder bloßstellen! Dies demütigt und ist pädagogisch falsch." },
+            { nr: 184, frage: "Videoclips sind zur Veranschaulichung von Bewegungsabläufen geeignet.", antwort: true, thema: "Mini-Basketball", erklaerung: "Kurze Videoclips können Bewegungsvorstellungen gut vermitteln. Wichtig: kurz halten!" },
+            { nr: 185, frage: "Bei jedem Spieler findet man etwas, was er/sie im Training gut/richtig macht.", antwort: true, thema: "Mini-Basketball", erklaerung: "Absolut! 'Catch them at being good' - bei jedem Kind gibt es etwas Positives zu finden." }
+        ];
+
+        // Hauptkomponente
+        function BasketballLernApp() {
+            const [modus, setModus] = useState('menu');
+            const [aktuelleFrageIndex, setAktuelleFrageIndex] = useState(0);
+            const [antworten, setAntworten] = useState({});
+            const [fragenListe, setFragenListe] = useState([]);
+            const [showErgebnis, setShowErgebnis] = useState(false);
+            const [selectedThema, setSelectedThema] = useState('alle');
+            const [showErklaerung, setShowErklaerung] = useState(false);
+            const [problemFragen, setProblemFragen] = useState({});
+
+            // LocalStorage laden beim Start
+            useEffect(() => {
+                const gespeichert = localStorage.getItem('basketballProblemFragen');
+                if (gespeichert) {
+                    setProblemFragen(JSON.parse(gespeichert));
+                }
+            }, []);
+
+            // LocalStorage speichern bei Änderungen
+            useEffect(() => {
+                localStorage.setItem('basketballProblemFragen', JSON.stringify(problemFragen));
+            }, [problemFragen]);
+
+            const themen = useMemo(() => {
+                const uniqueThemen = [...new Set(alleFragenData.map(f => f.thema))];
+                return ['alle', ...uniqueThemen];
+            }, []);
+
+            const starteModus = (modusTyp) => {
+                let neueFragen = [];
+                
+                if (modusTyp === 'pruefung') {
+                    // 25 zufällige Fragen
+                    const shuffled = [...alleFragenData].sort(() => Math.random() - 0.5);
+                    neueFragen = shuffled.slice(0, 25);
+                } else if (modusTyp === 'alle') {
+                    neueFragen = [...alleFragenData];
+                } else if (modusTyp === 'thema') {
+                    if (selectedThema === 'alle') {
+                        neueFragen = [...alleFragenData];
+                    } else {
+                        neueFragen = alleFragenData.filter(f => f.thema === selectedThema);
+                    }
+                } else if (modusTyp === 'zufall') {
+                    neueFragen = [...alleFragenData].sort(() => Math.random() - 0.5);
+                } else if (modusTyp === 'problem') {
+                    // Nur Problemfragen (noch nicht 3x richtig)
+                    const problemNummern = Object.keys(problemFragen)
+                        .filter(nr => (problemFragen[nr].richtigCount || 0) < 3)
+                        .map(nr => parseInt(nr));
+                    neueFragen = alleFragenData.filter(f => problemNummern.includes(f.nr));
+                    
+                    if (neueFragen.length === 0) {
+                        alert('🎉 Keine Problemfragen mehr! Du hast alle gemeistert!');
+                        return;
+                    }
+                }
+                
+                setFragenListe(neueFragen);
+                setAktuelleFrageIndex(0);
+                setAntworten({});
+                setShowErgebnis(false);
+                setShowErklaerung(false);
+                setModus('fragen');
+            };
+
+            const beantworteFrageUndWeiter = (antwort) => {
+                const aktuelleFrage = fragenListe[aktuelleFrageIndex];
+                const neueAntworten = {
+                    ...antworten,
+                    [aktuelleFrage.nr]: antwort
+                };
+                setAntworten(neueAntworten);
+                
+                // Problemfragen-Tracking
+                const istRichtig = antwort === aktuelleFrage.antwort;
+                const neueProblemFragen = { ...problemFragen };
+                
+                if (!neueProblemFragen[aktuelleFrage.nr]) {
+                    neueProblemFragen[aktuelleFrage.nr] = { richtigCount: 0, falschCount: 0 };
+                }
+                
+                if (istRichtig) {
+                    neueProblemFragen[aktuelleFrage.nr].richtigCount = 
+                        (neueProblemFragen[aktuelleFrage.nr].richtigCount || 0) + 1;
+                } else {
+                    // Bei Falschantwort: Zähler zurücksetzen
+                    neueProblemFragen[aktuelleFrage.nr].falschCount = 
+                        (neueProblemFragen[aktuelleFrage.nr].falschCount || 0) + 1;
+                    neueProblemFragen[aktuelleFrage.nr].richtigCount = 0;
+                }
+                
+                setProblemFragen(neueProblemFragen);
+                setShowErklaerung(true);
+            };
+
+            const naechsteFrage = () => {
+                if (aktuelleFrageIndex < fragenListe.length - 1) {
+                    setAktuelleFrageIndex(aktuelleFrageIndex + 1);
+                    setShowErklaerung(false);
+                } else {
+                    setShowErgebnis(true);
+                }
+            };
+
+            const zurueckZumMenu = () => {
+                setModus('menu');
+                setAktuelleFrageIndex(0);
+                setAntworten({});
+                setShowErgebnis(false);
+                setShowErklaerung(false);
+            };
+
+            const resetProblemFragen = () => {
+                if (confirm('Möchtest du wirklich alle Problemfragen zurücksetzen?')) {
+                    setProblemFragen({});
+                    localStorage.removeItem('basketballProblemFragen');
+                }
+            };
+
+            // Berechne Anzahl der Problemfragen
+            const anzahlProblemFragen = Object.keys(problemFragen)
+                .filter(nr => (problemFragen[nr].richtigCount || 0) < 3)
+                .length;
+
+            if (modus === 'menu') {
+                return (
+                    <div style={{minHeight: '100vh', background: 'linear-gradient(to bottom right, #fff7ed, #ffedd5)', padding: '1rem'}}>
+                        <div className="container">
+                            <div className="card">
+                                <div className="text-center mb-8">
+                                    <div className="text-6xl mb-4">🏀</div>
+                                    <h1 className="text-3xl font-bold text-orange-600 mb-2">
+                                        BBV JLS Prüfung
+                                    </h1>
+                                    <p className="text-gray-600">Alle 185 Fragen zum Üben</p>
+                                </div>
+
+                                <div className="space-y-4">
+                                    <button
+                                        onClick={() => starteModus('pruefung')}
+                                        className="btn btn-orange shadow-lg"
+                                    >
+                                        🎯 Prüfungssimulation (25 Fragen)
+                                    </button>
+
+                                    {anzahlProblemFragen > 0 && (
+                                        <button
+                                            onClick={() => starteModus('problem')}
+                                            className="btn btn-red shadow-lg relative"
+                                        >
+                                            <div className="flex-center">
+                                                <span>⚠️ Problemfragen üben</span>
+                                                <span className="ml-2 badge-white">
+                                                    {anzahlProblemFragen}
+                                                </span>
+                                            </div>
+                                        </button>
+                                    )}
+
+                                    <button
+                                        onClick={() => starteModus('alle')}
+                                        className="btn btn-blue shadow-lg"
+                                    >
+                                        📚 Alle Fragen (185)
+                                    </button>
+
+                                    <div className="bg-gray-50 p-4 rounded-lg">
+                                        <label className="text-sm font-bold text-gray-700 mb-2" style={{display: 'block'}}>
+                                            Nach Thema üben:
+                                        </label>
+                                        <select
+                                            value={selectedThema}
+                                            onChange={(e) => setSelectedThema(e.target.value)}
+                                            className="mb-2"
+                                        >
+                                            {themen.map(thema => (
+                                                <option key={thema} value={thema}>
+                                                    {thema === 'alle' ? 'Alle Themen' : thema}
+                                                </option>
+                                            ))}
+                                        </select>
+                                        <button
+                                            onClick={() => starteModus('thema')}
+                                            className="btn btn-green"
+                                        >
+                                            📖 Thema starten
+                                        </button>
+                                    </div>
+
+                                    <button
+                                        onClick={() => starteModus('zufall')}
+                                        className="btn btn-purple shadow-lg"
+                                    >
+                                        🔀 Zufallsmodus
+                                    </button>
+
+                                    {anzahlProblemFragen > 0 && (
+                                        <button
+                                            onClick={resetProblemFragen}
+                                            className="btn btn-gray-light text-sm"
+                                        >
+                                            🗑️ Problemfragen zurücksetzen
+                                        </button>
+                                    )}
+                                </div>
+
+                                <div className="mt-8 p-4 bg-orange-50 rounded-lg">
+                                    <h3 className="font-bold text-orange-800 mb-2">💡 Tipps:</h3>
+                                    <ul className="text-sm text-gray-700 space-y-1">
+                                        <li>✅ Ab 72% (18/25): bestanden</li>
+                                        <li>✅ Ab 88% (22/25): gut bestanden</li>
+                                        <li>⚠️ Falsche Antworten werden automatisch als Problemfragen gespeichert</li>
+                                        <li>🎯 Nach 3x richtig verschwindet eine Frage aus den Problemfragen</li>
+                                        <li>📖 Erklärungen genau lesen</li>
+                                    </ul>
+                                    {anzahlProblemFragen > 0 && (
+                                        <div className="mt-3 p-2 bg-red-100 rounded border border-red-300">
+                                            <span className="font-bold text-red-800">
+                                                ⚠️ {anzahlProblemFragen} Problemfrage{anzahlProblemFragen !== 1 ? 'n' : ''} zum Üben!
+                                            </span>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                );
+            }
+
+            if (showErgebnis) {
+                const richtigeAntworten = Object.entries(antworten).filter(([nr, antwort]) => {
+                    const frage = alleFragenData.find(f => f.nr === parseInt(nr));
+                    return frage && frage.antwort === antwort;
+                }).length;
+
+                const prozent = Math.round((richtigeAntworten / fragenListe.length) * 100);
+                let bewertung = '';
+                let farbe = '';
+                
+                // Prozentuale Bewertung: 72% = bestanden (18/25), 88% = gut bestanden (22/25)
+                if (prozent >= 88) {
+                    bewertung = '🌟 Sehr gut bestanden!';
+                    farbe = 'text-green-600';
+                } else if (prozent >= 72) {
+                    bewertung = '✅ Bestanden!';
+                    farbe = 'text-blue-600';
+                } else {
+                    bewertung = '❌ Nicht bestanden';
+                    farbe = 'text-red-600';
+                }
+
+                return (
+                    <div style={{minHeight: '100vh', background: 'linear-gradient(to bottom right, #fff7ed, #ffedd5)', padding: '1rem'}}>
+                        <div className="container mt-8">
+                            <div className="card fade-in">
+                                <h2 className="text-3xl font-bold text-center mb-6">Ergebnis</h2>
+                                
+                                <div className="text-center mb-8">
+                                    <div className={`text-6xl font-bold ${farbe} mb-4`}>
+                                        {richtigeAntworten} / {fragenListe.length}
+                                    </div>
+                                    <div className="text-2xl font-bold mb-2">{prozent}%</div>
+                                    <div className={`text-2xl font-bold ${farbe}`}>{bewertung}</div>
+                                </div>
+
+                                <div className="space-y-4 mb-6">
+                                    <div className="bg-gray-50 p-4 rounded-lg">
+                                        <h3 className="font-bold mb-2">Übersicht falsche Antworten:</h3>
+                                        {fragenListe.map(frage => {
+                                            const userAntwort = antworten[frage.nr];
+                                            const istRichtig = userAntwort === frage.antwort;
+                                            
+                                            if (istRichtig) return null;
+                                            
+                                            return (
+                                                <div key={frage.nr} className="mb-3 p-3 bg-red-50 rounded">
+                                                    <div className="text-sm font-bold text-red-800">
+                                                        Frage {frage.nr} - {frage.thema}
+                                                    </div>
+                                                    <div className="text-sm text-gray-700 mt-1">
+                                                        {frage.frage}
+                                                    </div>
+                                                    <div className="text-sm mt-2">
+                                                        <span className="text-red-600">Deine Antwort: {userAntwort ? 'Richtig' : 'Falsch'}</span>
+                                                        <span className="mx-2">→</span>
+                                                        <span className="text-green-600">Korrekt: {frage.antwort ? 'Richtig' : 'Falsch'}</span>
+                                                    </div>
+                                                    <div className="text-xs text-gray-600 mt-2 italic">
+                                                        {frage.erklaerung}
+                                                    </div>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+
+                                <button
+                                    onClick={zurueckZumMenu}
+                                    className="btn btn-orange"
+                                >
+                                    🏠 Zurück zum Menü
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                );
+            }
+
+            // Fragenmodus
+            const aktuelleFrage = fragenListe[aktuelleFrageIndex];
+            const userAntwort = antworten[aktuelleFrage?.nr];
+            const fortschritt = Math.round(((aktuelleFrageIndex + 1) / fragenListe.length) * 100);
+
+            return (
+                <div style={{minHeight: '100vh', background: 'linear-gradient(to bottom right, #fff7ed, #ffedd5)', padding: '1rem'}}>
+                    <div className="container mt-8">
+                        {/* Fortschrittsbalken */}
+                        <div className="mb-4">
+                            <div className="flex-between text-sm text-gray-600 mb-2">
+                                <span>Frage {aktuelleFrageIndex + 1} von {fragenListe.length}</span>
+                                <span>{fortschritt}%</span>
+                            </div>
+                            <div className="progress-bar">
+                                <div 
+                                    className="progress-fill"
+                                    style={{width: `${fortschritt}%`}}
+                                />
+                            </div>
+                        </div>
+
+                        <div className="card fade-in">
+                            <div className="mb-6">
+                                <span className="badge">
+                                    {aktuelleFrage.thema}
+                                </span>
+                                <h2 className="text-xl font-bold text-gray-800 leading-relaxed">
+                                    {aktuelleFrage.frage}
+                                </h2>
+                            </div>
+
+                            {!showErklaerung ? (
+                                <div className="space-y-3">
+                                    <button
+                                        onClick={() => beantworteFrageUndWeiter(true)}
+                                        className="btn btn-green shadow-lg btn-scale"
+                                    >
+                                        ✅ Richtig
+                                    </button>
+                                    <button
+                                        onClick={() => beantworteFrageUndWeiter(false)}
+                                        className="btn btn-red shadow-lg btn-scale"
+                                    >
+                                        ❌ Falsch
+                                    </button>
+                                </div>
+                            ) : (
+                                <div className="space-y-4 fade-in">
+                                    <div className={`p-4 rounded-lg ${userAntwort === aktuelleFrage.antwort ? 'bg-green-50 border-2 border-green-500' : 'bg-red-50 border-2 border-red-500'}`}>
+                                        <div className="font-bold text-lg mb-2">
+                                            {userAntwort === aktuelleFrage.antwort ? '✅ Richtig!' : '❌ Falsch!'}
+                                        </div>
+                                        <div className="text-sm text-gray-700">
+                                            <strong>Deine Antwort:</strong> {userAntwort ? 'Richtig' : 'Falsch'}
+                                        </div>
+                                        <div className="text-sm text-gray-700 mt-1">
+                                            <strong>Korrekte Antwort:</strong> {aktuelleFrage.antwort ? 'Richtig' : 'Falsch'}
+                                        </div>
+                                        {problemFragen[aktuelleFrage.nr] && (
+                                            <div className="mt-3 pt-3 border-t border-gray-300">
+                                                <div className="text-xs text-gray-600">
+                                                    Fortschritt: {problemFragen[aktuelleFrage.nr].richtigCount || 0}/3 richtig
+                                                    {(problemFragen[aktuelleFrage.nr].richtigCount || 0) >= 3 && (
+                                                        <span className="ml-2 text-green-600 font-bold">✓ Gemeistert!</span>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    <div className="bg-blue-50 p-4 rounded-lg">
+                                        <div className="font-bold text-blue-800 mb-2">💡 Erklärung:</div>
+                                        <div className="text-sm text-gray-700">
+                                            {aktuelleFrage.erklaerung}
+                                        </div>
+                                    </div>
+
+                                    <button
+                                        onClick={naechsteFrage}
+                                        className="btn btn-orange"
+                                    >
+                                        {aktuelleFrageIndex < fragenListe.length - 1 ? '➡️ Nächste Frage' : '🏁 Ergebnis anzeigen'}
+                                    </button>
+                                </div>
+                            )}
+
+                            <button
+                                onClick={zurueckZumMenu}
+                                className="btn btn-gray-light mt-4"
+                            >
+                                🏠 Abbrechen
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        // App rendern
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<BasketballLernApp />);
+
+        // Service Worker registrieren
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then((registration) => {
+                        console.log('Service Worker registriert:', registration);
+                    })
+                    .catch((error) => {
+                        console.log('Service Worker Registrierung fehlgeschlagen:', error);
+                    });
+            });
+        }
+    </script>
+</body>
+</html>
