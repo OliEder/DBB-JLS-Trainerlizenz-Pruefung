@@ -555,9 +555,12 @@
                 } else if (modusTyp === 'zufall') {
                     neueFragen = [...alleFragenData].sort(() => Math.random() - 0.5);
                 } else if (modusTyp === 'problem') {
-                    // Nur Problemfragen (noch nicht 3x richtig)
+                    // Nur Problemfragen (mind. 1x falsch UND noch nicht 3x richtig)
                     const problemNummern = Object.keys(problemFragen)
-                        .filter(nr => (problemFragen[nr].richtigCount || 0) < 3)
+                        .filter(nr => {
+                            const frage = problemFragen[nr];
+                            return (frage.falschCount > 0) && (frage.richtigCount < 3);
+                        })
                         .map(nr => parseInt(nr));
                     neueFragen = alleFragenData.filter(f => problemNummern.includes(f.nr));
                     
@@ -583,22 +586,22 @@
                 };
                 setAntworten(neueAntworten);
                 
-                // Problemfragen-Tracking
+                // Problemfragen-Tracking: Nur falsch beantwortete Fragen tracken
                 const istRichtig = antwort === aktuelleFrage.antwort;
                 const neueProblemFragen = { ...problemFragen };
                 
-                if (!neueProblemFragen[aktuelleFrage.nr]) {
-                    neueProblemFragen[aktuelleFrage.nr] = { richtigCount: 0, falschCount: 0 };
-                }
-                
-                if (istRichtig) {
-                    neueProblemFragen[aktuelleFrage.nr].richtigCount = 
-                        (neueProblemFragen[aktuelleFrage.nr].richtigCount || 0) + 1;
-                } else {
-                    // Bei Falschantwort: Zähler zurücksetzen
+                if (!istRichtig) {
+                    // Nur bei Falschantwort: Frage zu Problemfragen hinzufügen
+                    if (!neueProblemFragen[aktuelleFrage.nr]) {
+                        neueProblemFragen[aktuelleFrage.nr] = { richtigCount: 0, falschCount: 0 };
+                    }
                     neueProblemFragen[aktuelleFrage.nr].falschCount = 
                         (neueProblemFragen[aktuelleFrage.nr].falschCount || 0) + 1;
-                    neueProblemFragen[aktuelleFrage.nr].richtigCount = 0;
+                    neueProblemFragen[aktuelleFrage.nr].richtigCount = 0; // Zurücksetzen
+                } else if (neueProblemFragen[aktuelleFrage.nr]) {
+                    // Nur wenn Frage bereits als Problemfrage existiert: richtigCount erhöhen
+                    neueProblemFragen[aktuelleFrage.nr].richtigCount = 
+                        (neueProblemFragen[aktuelleFrage.nr].richtigCount || 0) + 1;
                 }
                 
                 setProblemFragen(neueProblemFragen);
@@ -629,9 +632,12 @@
                 }
             };
 
-            // Berechne Anzahl der Problemfragen
+            // Berechne Anzahl der Problemfragen (nur Fragen die mind. 1x falsch waren und noch nicht 3x richtig)
             const anzahlProblemFragen = Object.keys(problemFragen)
-                .filter(nr => (problemFragen[nr].richtigCount || 0) < 3)
+                .filter(nr => {
+                    const frage = problemFragen[nr];
+                    return (frage.falschCount > 0) && (frage.richtigCount < 3);
+                })
                 .length;
 
             if (modus === 'menu') {
